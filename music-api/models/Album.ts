@@ -13,12 +13,12 @@ const AlbumSchema = new Schema({
     required: true,
     validate: {
       validator: async (value: Types.ObjectId) => Artist.findById(value),
-      message: 'Artist does not exist'
+      message: 'Artist does not exist',
     }
   },
   yearOfIssue: {
     type: String,
-    required: true
+    required: true,
   },
   image: String,
 });

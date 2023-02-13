@@ -13,13 +13,13 @@ const TrackSchema = new Schema({
     required: true,
     validate: {
       validator: async (value: Types.ObjectId) => Album.findById(value),
-      message: 'Artist does not exist'
+      message: 'Album does not exist',
     }
   },
   length: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const Track = mongoose.model('Track', TrackSchema);

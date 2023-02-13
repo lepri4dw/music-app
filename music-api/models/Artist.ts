@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 const ArtistSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   photo: String,
-  info: String
+  info: String,
 });
 
 const Artist = mongoose.model('Artist', ArtistSchema);
