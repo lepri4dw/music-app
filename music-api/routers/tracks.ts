@@ -7,7 +7,7 @@ const tracksRouter = express.Router();
 tracksRouter.get('/', async (req, res, next) => {
   try {
     if (req.query.album) {
-      const tracks = await Track.find({album: req.query.album});
+      const tracks = await Track.find({album: req.query.album}).sort('trackNumber');
       return res.send(tracks);
     }
 
