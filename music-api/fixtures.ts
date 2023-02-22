@@ -18,7 +18,7 @@ const run = async () => {
 
   const [Eminem, Drake] = await Artist.create({
     name: 'Eminem',
-    photo: 'fixtures/Eminem.webp',
+    photo: 'fixtures/Eminem.jpeg',
     info: ''
   }, {
     name: 'Drake',
