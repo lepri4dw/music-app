@@ -18,11 +18,8 @@ const Albums = () => {
   const artistLoading = useAppSelector(selectOneArtistFetching);
 
   useEffect(() => {
-    dispatch(fetchOneArtist(id));
-  }, [dispatch])
-
-  useEffect(() => {
     dispatch(fetchAlbums(id));
+    dispatch(fetchOneArtist(id));
   }, [dispatch]);
 
   return (
@@ -35,7 +32,7 @@ const Albums = () => {
         </Grid>
         <Grid item container spacing={2}>
           {albums.map(album => (
-            <AlbumItem key={album._id} name={album.name} _id={album._id} image={album.image} yearOfIssue={album.yearOfIssue}/>
+            <AlbumItem key={album._id} name={album.name} _id={album._id} image={album.image} yearOfIssue={album.yearOfIssue} artistId={id}/>
           ))}
         </Grid>
       </Grid>}

@@ -23,7 +23,7 @@ const ArtistItem: React.FC<Props> = ({name, photo, _id}) => {
   }
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-      <Card component={Link} to={'albums/' + _id}>
+      <Card component={Link} to={'/albums/' + _id} style={{textDecoration: "none"}}>
         <CardActionArea>
           <ImageCardMedia image={cardImage} title={name}/>
           <CardContent>
