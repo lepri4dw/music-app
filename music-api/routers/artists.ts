@@ -14,6 +14,20 @@ artistsRouter.get('/', async (req, res, next) => {
   }
 });
 
+artistsRouter.get('/:id', async (req, res, next) => {
+  try {
+    const result = await Artist.findById(req.params.id);
+
+    if (!result) {
+      return res.sendStatus(404);
+    }
+
+    return res.send(result);
+  } catch (e) {
+    return next(e);
+  }
+});
+
 artistsRouter.post('/', imagesUpload.single('photo'), async (req, res, next) => {
   const artistData = {
     name: req.body.name,

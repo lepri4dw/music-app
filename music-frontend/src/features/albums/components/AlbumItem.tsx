@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, CardActionArea, CardContent, CardMedia, Grid, styled, Typography } from '@mui/material';
+
+import { Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid, styled } from '@mui/material';
 import noImageAvailable from '../../../assets/images/noImageAvailable.png';
 import { apiURL } from '../../../constants';
-import { Link } from 'react-router-dom';
 
 const ImageCardMedia = styled(CardMedia)({
   height: 0,
@@ -12,22 +12,27 @@ const ImageCardMedia = styled(CardMedia)({
 interface Props {
   name: string;
   _id: string;
-  photo: string | null;
+  image: string | null;
+  yearOfIssue: number;
 }
 
-const ArtistItem: React.FC<Props> = ({name, photo, _id}) => {
+const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue}) => {
   let cardImage = noImageAvailable;
 
-  if (photo) {
-    cardImage = apiURL + '/' + photo;
+  if (image) {
+    cardImage = apiURL + '/' + image;
   }
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-      <Card component={Link} to={'albums/' + _id}>
+      <Card>
         <CardActionArea>
+          <CardHeader title={name}/>
           <ImageCardMedia image={cardImage} title={name}/>
           <CardContent>
-            <Typography variant="h6">{name}</Typography>
+            <p>
+              <strong>Year:</strong> {yearOfIssue}
+            </p>
           </CardContent>
         </CardActionArea>
       </Card>
@@ -35,4 +40,4 @@ const ArtistItem: React.FC<Props> = ({name, photo, _id}) => {
   );
 };
 
-export default ArtistItem;
+export default AlbumItem;
