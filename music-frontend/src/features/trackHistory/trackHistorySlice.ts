@@ -1,10 +1,10 @@
-import { TrackHistory } from '../../types';
+import { ITrackHistory } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { createTrackHistory, fetchTrackHistory } from './trackHistoryThunks';
 
 interface TrackHistoryState {
-  items: TrackHistory[];
+  items: ITrackHistory[];
   fetchLoading: boolean;
   createLoading: boolean;
 }

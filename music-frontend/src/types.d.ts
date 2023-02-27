@@ -58,7 +58,7 @@ export interface LoginMutation {
   password: string;
 }
 
-export interface TrackHistory {
+export interface ITrackHistory {
   _id: string;
   track: Track;
   artist: Artist;

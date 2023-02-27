@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { TrackHistory } from '../../types';
+import { ITrackHistory } from '../../types';
 import axiosApi from '../../axiosApi';
 import { RootState } from '../../app/store';
 
-export const fetchTrackHistory = createAsyncThunk<TrackHistory[], void, {state: RootState}>(
+export const fetchTrackHistory = createAsyncThunk<ITrackHistory[], void, {state: RootState}>(
   'trackHistory/fetch',
   async (_, {getState}) => {
     const user = getState().users.user;

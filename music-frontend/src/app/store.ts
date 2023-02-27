@@ -1,12 +1,13 @@
 import {configureStore} from "@reduxjs/toolkit";
+import storage from 'redux-persist/lib/storage';
+import { persistReducer, persistStore} from 'redux-persist';
+import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
 import { artistsReducer } from '../features/artists/artistsSlice';
 import { albumsReducer } from '../features/albums/albumsSlice';
 import { tracksReducer } from '../features/tracks/tracksSlice';
 import { usersReducer } from '../features/users/usersSlice';
-import storage from 'redux-persist/lib/storage';
-import { persistReducer, persistStore } from 'redux-persist';
-import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
 import { trackHistoryReducer } from '../features/trackHistory/trackHistorySlice';
+
 
 const usersPersistConfig = {
   key: 'music-app:users',

@@ -7,6 +7,7 @@ import Albums from './features/albums/Albums';
 import Tracks from './features/tracks/Tracks';
 import Register from './features/users/Register';
 import Login from './features/users/Login';
+import TrackHistory from './features/trackHistory/TrackHistory';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/tracks/:artistId/:id" element={<Tracks/>}/>
             <Route path="/register" element={<Register/>}/>
             <Route path="/login" element={<Login/>}/>
+            <Route path="/track_history" element={<TrackHistory/>}/>
           </Routes>
         </Container>
       </main>
