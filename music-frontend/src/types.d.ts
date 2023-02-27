@@ -43,3 +43,17 @@ export interface ValidationError {
   name: string;
   _message: string;
 }
+
+export interface RegisterResponse {
+  message: string;
+  user: User;
+}
+
+export interface GlobalError {
+  error: string;
+}
+
+export interface LoginMutation {
+  username: string;
+  password: string;
+}
