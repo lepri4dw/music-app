@@ -1,9 +1,10 @@
 import mongoose, {Types} from "mongoose";
 import Album from "./Album";
+import {ITrack} from "../types";
 
 const Schema = mongoose.Schema;
 
-const TrackSchema = new Schema({
+const TrackSchema = new Schema<ITrack>({
   name: {
     type: String,
     required: true,
