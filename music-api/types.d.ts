@@ -6,20 +6,6 @@ export interface IUser {
   token: string;
 }
 
-export interface IAlbum {
-  name: string;
-  artist: Schema.Types.ObjectId;
-  yearOfIssue: number;
-  image: string;
-}
-
-export interface ITrack {
-  name: string;
-  album: Schema.Types.ObjectId;
-  length: string;
-  trackNumber: number;
-}
-
 export interface IFullTrack {
   _id: Schema.Types.ObjectId;
   length: string;

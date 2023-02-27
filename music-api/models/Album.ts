@@ -1,9 +1,9 @@
 import mongoose, {Types} from "mongoose";
 import Artist from "./Artist";
-import {IAlbum} from "../types";
+
 const Schema = mongoose.Schema;
 
-const AlbumSchema = new Schema<IAlbum>({
+const AlbumSchema = new Schema({
   name: {
     type: String,
     required: true,
