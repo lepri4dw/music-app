@@ -37,7 +37,7 @@ const Tracks = () => {
           </Typography>}
         </Grid>
         <Grid item container spacing={2}>
-          {tracks.map(track => (<TrackItem key={track._id} name={track.name} trackNumber={track.trackNumber} length={track.length}/>))}
+          {tracks.map(track => (<TrackItem key={track._id} id={track._id} name={track.name} trackNumber={track.trackNumber} length={track.length}/>))}
         </Grid>
       </Grid>}
     </>

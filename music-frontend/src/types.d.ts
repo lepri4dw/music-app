@@ -1,14 +1,14 @@
 export interface Artist {
   _id: string;
   name: string;
-  photo: string;
+  photo: string | null;
   info: string;
 }
 
 export interface Album {
   _id: string;
   name: string;
-  image: string;
+  image: string | null;
   artist: Artist;
   yearOfIssue: number;
 }
@@ -56,4 +56,12 @@ export interface GlobalError {
 export interface LoginMutation {
   username: string;
   password: string;
+}
+
+export interface TrackHistory {
+  _id: string;
+  track: Track;
+  artist: Artist;
+  user: string;
+  datetime: string;
 }

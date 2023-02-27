@@ -7,6 +7,16 @@ import {IFullTrack} from "../types";
 
 const trackHistoryRouter = express.Router();
 
+trackHistoryRouter.get('/', auth, async (req, res, next) => {
+  try {
+    const user = (req as RequestWithUser).user;
+    const trackHistory = await TrackHistory.find({user: user._id}).sort([['datetime', -1]]).populate('track').populate('artist');
+    return res.send(trackHistory);
+  } catch (e) {
+    return next(e);
+  }
+})
+
 trackHistoryRouter.post('/', auth, async (req, res, next) => {
   try {
     const user = (req as RequestWithUser).user;
