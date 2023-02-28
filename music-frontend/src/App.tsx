@@ -24,6 +24,7 @@ function App() {
             <Route path="/register" element={<Register/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/track_history" element={<TrackHistory/>}/>
+            <Route path="/*" element={<h1>Not Found! This page does not exist!</h1>}/>
           </Routes>
         </Container>
       </main>
