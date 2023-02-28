@@ -24,6 +24,10 @@ const TrackSchema = new Schema({
   trackNumber: {
     type: Number,
     required: true,
+  },
+  youtubeId: {
+    type: String,
+    required: true,
   }
 });
 

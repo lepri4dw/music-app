@@ -17,4 +17,5 @@ export interface IFullTrack {
   }
   name: string;
   trackNumber: number;
+  youtubeId: string;
 }

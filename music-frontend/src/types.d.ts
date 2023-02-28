@@ -19,6 +19,7 @@ export interface Track {
   album: string;
   length: string;
   trackNumber: number;
+  youtubeId: string;
 }
 
 export interface RegisterMutation {
