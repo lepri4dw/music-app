@@ -2,15 +2,27 @@ import express from "express";
 import Track from "../models/Track";
 import mongoose from "mongoose";
 import {ITracks} from "../types";
-import auth from "../middleware/auth";
+import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
+import user from "../middleware/user";
 
 const tracksRouter = express.Router();
 
-tracksRouter.get('/', async (req, res, next) => {
+tracksRouter.get('/', user, async (req, res, next) => {
   try {
+    const user = (req as RequestWithUser).user;
+
     if (req.query.album) {
-      const tracks = await Track.find<ITracks>({album: req.query.album}).populate({path: 'album', populate: {path: 'artist', select: 'name'}}).sort('trackNumber');
+      if (user && user.role === 'admin') {
+        const tracks = await Track.find<ITracks>({album: req.query.album}).populate({path: 'album', populate: {path: 'artist', select: 'name'}}).sort('trackNumber');
+        return res.send({
+          tracks: tracks,
+          artist: tracks[0].album.artist.name,
+          albumName: tracks[0].album.name
+        });
+      }
+
+      const tracks = await Track.find<ITracks>({album: req.query.album, isPublished: true}).populate({path: 'album', populate: {path: 'artist', select: 'name'}}).sort('trackNumber');
       return res.send({
         tracks: tracks,
         artist: tracks[0].album.artist.name,
@@ -18,7 +30,12 @@ tracksRouter.get('/', async (req, res, next) => {
       });
     }
 
-    const tracks = await Track.find();
+    if (user && user.role === 'admin') {
+      const tracks = await Track.find();
+      return res.send(tracks);
+    }
+
+    const tracks = await Track.find({isPublished: true});
     return res.send(tracks);
   } catch (e) {
     return next(e);
@@ -49,6 +66,21 @@ tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
     await Track.deleteOne({_id: req.params.id});
     return res.send({message: 'Deleted'});
+  } catch (e) {
+    return next(e);
+  }
+});
+
+tracksRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+  try {
+    const track = await Track.findById(req.params.id);
+
+    if (!track) {
+      return res.sendStatus(404);
+    }
+
+    await Track.updateOne({_id: req.params.id}, {isPublished: !track.isPublished});
+    return res.send({message: 'Artist was published!'});
   } catch (e) {
     return next(e);
   }

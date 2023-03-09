@@ -1,35 +1,52 @@
 import express from "express";
 import Album from "../models/Album";
 import {imagesUpload} from "../multer";
-import mongoose from "mongoose";
+import mongoose, {LeanDocument} from "mongoose";
 import Track from "../models/Track";
 import permit from "../middleware/permit";
-import auth from "../middleware/auth";
+import auth, {RequestWithUser} from "../middleware/auth";
+import user from "../middleware/user";
+import {IAlbum} from "../types";
 
 const albumsRouter = express.Router();
 
-albumsRouter.get('/', async (req, res, next) => {
+const getAlbumsWithNumberOfTracks = async (albums: LeanDocument<IAlbum>[]) => {
+  return await Promise.all(albums.map(async (album) => {
+    const tracks = await Track.find({album: album._id, isPublished: true});
+    return {
+      ...album,
+      numberOfTracks: tracks.length
+    }
+  }));
+}
+
+albumsRouter.get('/', user, async (req, res, next) => {
   try {
+    const user = (req as RequestWithUser).user;
+
     if (req.query.artist) {
-      const albums = await Album.find({artist: req.query.artist}).sort([['yearOfIssue', -1]]).lean();
-      const newAlbums = await Promise.all(albums.map(async (album) => {
-        const tracks = await Track.find({album: album._id});
-        return {
-          ...album,
-          numberOfTracks: tracks.length
-        }
-      }));
+      if (user && user.role === 'admin') {
+        const albums = await Album.find({artist: req.query.artist}).sort([['yearOfIssue', -1]]).lean() as LeanDocument<IAlbum>[];
+        const newAlbums = await getAlbumsWithNumberOfTracks(albums);
+
+        return res.send(newAlbums);
+      }
+
+      const albums = await Album.find({artist: req.query.artist, isPublished: true}).sort([['yearOfIssue', -1]]).lean() as LeanDocument<IAlbum>[];
+      const newAlbums = await getAlbumsWithNumberOfTracks(albums);
       return res.send(newAlbums);
     }
 
-    const albums = await Album.find().sort([['yearOfIssue', -1]]);
-    const newAlbums = albums.map(async (album) => {
-      const tracks = await Track.find({album: album._id});
-      return {
-        ...album,
-        numberOfTracks: tracks.length
-      }
-    });
+    if (user && user.role === 'admin') {
+      const albums = await Album.find().sort([['yearOfIssue', -1]]).lean() as LeanDocument<IAlbum>[];
+      const newAlbums = await getAlbumsWithNumberOfTracks(albums);
+
+      return res.send(newAlbums);
+    }
+
+    const albums = await Album.find({isPublished: true}).sort([['yearOfIssue', -1]]).lean() as LeanDocument<IAlbum>[];
+    const newAlbums = await getAlbumsWithNumberOfTracks(albums);
+
     return res.send(newAlbums);
   } catch (e) {
     return next(e);
@@ -74,6 +91,21 @@ albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
     await Album.deleteOne({_id: req.params.id});
     return res.send({message: 'Deleted'});
+  } catch (e) {
+    return next(e);
+  }
+});
+
+albumsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+  try {
+    const album = await Album.findById(req.params.id);
+
+    if (!album) {
+      return res.sendStatus(404);
+    }
+
+    await Album.updateOne({_id: req.params.id}, {isPublished: !album.isPublished});
+    return res.send({message: 'Album was published!'});
   } catch (e) {
     return next(e);
   }

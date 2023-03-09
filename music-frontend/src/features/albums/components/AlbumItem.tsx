@@ -33,7 +33,7 @@ const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, numberOfTrac
           <ImageCardMedia image={cardImage} title={name}/>
           <CardContent>
             <Typography variant="subtitle1">Year: <strong>{yearOfIssue}</strong></Typography>
-            <Typography variant="subtitle1">Number of tracks:  <strong>{numberOfTracks}</strong></Typography>
+            <Typography variant="subtitle1">Number of published tracks:  <strong>{numberOfTracks}</strong></Typography>
           </CardContent>
         </CardActionArea>
       </Card>

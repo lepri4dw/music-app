@@ -2,14 +2,22 @@ import express from "express";
 import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
-import auth from "../middleware/auth";
+import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
+import user from "../middleware/user";
 
 const artistsRouter = express.Router();
 
-artistsRouter.get('/', async (req, res, next) => {
+artistsRouter.get('/', user, async (req, res, next) => {
   try {
-    const artists = await Artist.find();
+    const user = (req as RequestWithUser).user;
+
+    if (user && user.role === 'admin') {
+      const artists = await Artist.find();
+      return res.send(artists);
+    }
+
+    const artists = await Artist.find({isPublished: true});
     return res.send(artists);
   } catch (e) {
     return next(e);
@@ -52,6 +60,21 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
     await Artist.deleteOne({_id: req.params.id});
     return res.send({message: 'Deleted'});
+  } catch (e) {
+    return next(e);
+  }
+});
+
+artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+  try {
+    const artist = await Artist.findById(req.params.id);
+
+    if (!artist) {
+      return res.sendStatus(404);
+    }
+
+    await Artist.updateOne({_id: req.params.id}, {isPublished: !artist.isPublished});
+    return res.send({message: 'Artist was published!'});
   } catch (e) {
     return next(e);
   }
