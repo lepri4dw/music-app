@@ -20,7 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Artists/>}/>
             <Route path="/albums/:id" element={<Albums/>}/>
-            <Route path="/tracks/:artistId/:id" element={<Tracks/>}/>
+            <Route path="/tracks/:id" element={<Tracks/>}/>
             <Route path="/register" element={<Register/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/track_history" element={<TrackHistory/>}/>

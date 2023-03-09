@@ -2,6 +2,8 @@ import express from "express";
 import Artist from "../models/Artist";
 import {imagesUpload} from "../multer";
 import mongoose from "mongoose";
+import auth from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const artistsRouter = express.Router();
 
@@ -28,17 +30,14 @@ artistsRouter.get('/:id', async (req, res, next) => {
   }
 });
 
-artistsRouter.post('/', imagesUpload.single('photo'), async (req, res, next) => {
-  const artistData = {
-    name: req.body.name,
-    photo: req.file ? req.file.filename : null,
-    info: req.body.info,
-  };
-
-  const artist = new Artist(artistData);
-
+artistsRouter.post('/', auth, imagesUpload.single('photo'), async (req, res, next) => {
   try {
-    await artist.save();
+    const artist = await Artist.create({
+      name: req.body.name,
+      photo: req.file ? req.file.filename : null,
+      info: req.body.info,
+    });
+
     return res.send(artist);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {
@@ -46,6 +45,15 @@ artistsRouter.post('/', imagesUpload.single('photo'), async (req, res, next) => 
     } else {
       return next(e);
     }
+  }
+});
+
+artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
+  try {
+    await Artist.deleteOne({_id: req.params.id});
+    return res.send({message: 'Deleted'});
+  } catch (e) {
+    return next(e);
   }
 });
 

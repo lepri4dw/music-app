@@ -9,11 +9,3 @@ export const fetchAlbums = createAsyncThunk<Album[], string>(
     return response.data;
   }
 )
-
-export const fetchOneAlbum = createAsyncThunk<Album, string>(
-  'albums/fetchOne',
-  async (id) => {
-    const response = await axiosApi.get<Album>('/albums/' + id);
-    return response.data;
-  }
-)

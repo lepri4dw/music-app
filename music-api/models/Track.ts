@@ -28,6 +28,11 @@ const TrackSchema = new Schema({
   youtubeId: {
     type: String,
     required: true,
+  },
+  isPublished: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 });
 

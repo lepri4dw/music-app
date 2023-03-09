@@ -1,14 +1,21 @@
 import express from "express";
 import Track from "../models/Track";
 import mongoose from "mongoose";
+import {ITracks} from "../types";
+import auth from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const tracksRouter = express.Router();
 
 tracksRouter.get('/', async (req, res, next) => {
   try {
     if (req.query.album) {
-      const tracks = await Track.find({album: req.query.album}).sort('trackNumber');
-      return res.send(tracks);
+      const tracks = await Track.find<ITracks>({album: req.query.album}).populate({path: 'album', populate: {path: 'artist', select: 'name'}}).sort('trackNumber');
+      return res.send({
+        tracks: tracks,
+        artist: tracks[0].album.artist.name,
+        albumName: tracks[0].album.name
+      });
     }
 
     const tracks = await Track.find();
@@ -18,18 +25,16 @@ tracksRouter.get('/', async (req, res, next) => {
   }
 });
 
-tracksRouter.post('/', async (req, res, next) => {
-  const trackData = {
-    name: req.body.name,
-    album: req.body.album,
-    length: req.body.length,
-    youtubeId: req.body.youtubeId
-  };
-
-  const track = new Track(trackData);
-
+tracksRouter.post('/', auth, async (req, res, next) => {
   try {
-    await track.save();
+    const track = await Track.create({
+      name: req.body.name,
+      album: req.body.album,
+      length: req.body.length,
+      trackNumber: req.body.trackNumber,
+      youtubeId: req.body.youtubeId
+    });
+
     return res.send(track);
   } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) {
@@ -37,6 +42,15 @@ tracksRouter.post('/', async (req, res, next) => {
     } else {
       return next(e);
     }
+  }
+});
+
+tracksRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
+  try {
+    await Track.deleteOne({_id: req.params.id});
+    return res.send({message: 'Deleted'});
+  } catch (e) {
+    return next(e);
   }
 });
 

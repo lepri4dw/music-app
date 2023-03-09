@@ -4,6 +4,7 @@ export interface IUser {
   username: string;
   password: string;
   token: string;
+  role: string;
 }
 
 export interface IFullTrack {
@@ -18,4 +19,15 @@ export interface IFullTrack {
   name: string;
   trackNumber: number;
   youtubeId: string;
+}
+
+export interface ITracks extends IFullTrack{
+  album: {
+    artist: {
+      name: string;
+    },
+    name: string;
+    image: string;
+    yearOfIssue: number;
+  }
 }

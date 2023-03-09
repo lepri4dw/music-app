@@ -20,7 +20,7 @@ const Albums = () => {
   useEffect(() => {
     dispatch(fetchAlbums(id));
     dispatch(fetchOneArtist(id));
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   return (
     <>
@@ -32,7 +32,7 @@ const Albums = () => {
         </Grid>
         <Grid item container spacing={2}>
           {albums.map(album => (
-            <AlbumItem key={album._id} name={album.name} _id={album._id} image={album.image} yearOfIssue={album.yearOfIssue} artistId={id}/>
+            <AlbumItem key={album._id} numberOfTracks={album.numberOfTracks} name={album.name} _id={album._id} image={album.image} yearOfIssue={album.yearOfIssue}/>
           ))}
         </Grid>
       </Grid>}

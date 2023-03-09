@@ -1,4 +1,4 @@
-import {configureStore} from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore} from 'redux-persist';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
@@ -15,13 +15,13 @@ const usersPersistConfig = {
   whitelist: ['user'],
 };
 
-const rootReducer = {
+const rootReducer = combineReducers({
   artists: artistsReducer,
   albums: albumsReducer,
   tracks: tracksReducer,
   users: persistReducer(usersPersistConfig, usersReducer),
   trackHistory: trackHistoryReducer,
-}
+});
 
 export const store = configureStore({
   reducer: rootReducer,

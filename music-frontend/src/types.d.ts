@@ -11,6 +11,7 @@ export interface Album {
   image: string | null;
   artist: Artist;
   yearOfIssue: number;
+  numberOfTracks: number;
 }
 
 export interface Track {
@@ -20,6 +21,12 @@ export interface Track {
   length: string;
   trackNumber: number;
   youtubeId: string;
+}
+
+export interface ITracks {
+  tracks: Track[];
+  artist: string;
+  albumName: string;
 }
 
 export interface RegisterMutation {

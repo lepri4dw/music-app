@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { LoginMutation } from '../../types';
-import { Alert, Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectLoginError } from './usersSlice';
+import { selectLoginError, selectLoginLoading } from './usersSlice';
 import { login } from './usersThunks';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const error = useAppSelector(selectLoginError);
   const navigate = useNavigate();
+  const loading = useAppSelector(selectLoginLoading);
+
 
   const [state, setState] = useState<LoginMutation>({
     username: '',
@@ -71,14 +73,16 @@ const Login = () => {
               />
             </Grid>
           </Grid>
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{mt: 3, mb: 2}}
+            loading={loading}
+            loadingIndicator="Loading…"
           >
             Sign In
-          </Button>
+          </LoadingButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/register" variant="body2">

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid, styled } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid, styled, Typography } from '@mui/material';
 import noImageAvailable from '../../../assets/images/noImageAvailable.png';
 import { apiURL } from '../../../constants';
 import { Link } from 'react-router-dom';
@@ -15,10 +15,10 @@ interface Props {
   _id: string;
   image: string | null;
   yearOfIssue: number;
-  artistId: string;
+  numberOfTracks: number;
 }
 
-const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, artistId}) => {
+const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, numberOfTracks}) => {
   let cardImage = noImageAvailable;
 
   if (image) {
@@ -27,14 +27,13 @@ const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, artistId}) =
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-      <Card component={Link} to={'/tracks/' + artistId + '/' + _id} style={{textDecoration: "none"}}>
+      <Card component={Link} to={'/tracks/' + _id} style={{textDecoration: "none"}}>
         <CardActionArea>
           <CardHeader title={name}/>
           <ImageCardMedia image={cardImage} title={name}/>
           <CardContent>
-            <p>
-              <strong>Year:</strong> {yearOfIssue}
-            </p>
+            <Typography variant="subtitle1">Year: <strong>{yearOfIssue}</strong></Typography>
+            <Typography variant="subtitle1">Number of tracks:  <strong>{numberOfTracks}</strong></Typography>
           </CardContent>
         </CardActionArea>
       </Card>

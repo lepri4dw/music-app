@@ -33,6 +33,12 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
   token: {
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+    default: 'user',
+    enum: ['user', 'admin']
   }
 });
 

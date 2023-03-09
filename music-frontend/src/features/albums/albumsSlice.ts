@@ -1,7 +1,7 @@
 import { Album } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { fetchAlbums, fetchOneAlbum } from './albumsThunks';
+import { fetchAlbums } from './albumsThunks';
 
 interface AlbumsState {
   items: Album[];
@@ -31,16 +31,6 @@ const albumsSlice = createSlice({
     });
     builder.addCase(fetchAlbums.rejected, (state) => {
       state.fetchLoading = false;
-    });
-    builder.addCase(fetchOneAlbum.pending, (state) => {
-      state.fetchOneLoading = true;
-    });
-    builder.addCase(fetchOneAlbum.fulfilled, (state, {payload: album}) => {
-      state.fetchOneLoading = false;
-      state.oneAlbum = album;
-    });
-    builder.addCase(fetchOneAlbum.rejected, (state) => {
-      state.fetchOneLoading = false;
     });
   },
 });
