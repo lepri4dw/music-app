@@ -1,7 +1,7 @@
 import { Artist, ValidationError } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { createArtist, fetchArtists, fetchOneArtist } from './artistsThunks';
+import { createArtist, fetchArtists, fetchOneArtist, publishedArtist } from './artistsThunks';
 
 interface ArtistsState {
   items: Artist[],
@@ -10,6 +10,7 @@ interface ArtistsState {
   fetchOneLoading: boolean;
   createLoading: boolean;
   createArtistError: ValidationError | null;
+  publishedLoading: boolean;
 }
 
 const initialState: ArtistsState = {
@@ -19,6 +20,7 @@ const initialState: ArtistsState = {
   fetchOneLoading: false,
   createLoading: false,
   createArtistError: null,
+  publishedLoading: false
 };
 
 const artistsSlice = createSlice({
@@ -59,6 +61,17 @@ const artistsSlice = createSlice({
       state.createArtistError = error || null;
       state.createLoading = false;
     });
+
+    builder.addCase(publishedArtist.pending, (state) => {
+      state.publishedLoading = true;
+    });
+    builder.addCase(publishedArtist.fulfilled, (state) => {
+      state.publishedLoading = false;
+    });
+    builder.addCase(publishedArtist.rejected, (state) => {
+      state.publishedLoading = false;
+    });
+
   },
 });
 
@@ -70,3 +83,4 @@ export const selectOneArtist = (state: RootState) => state.artists.oneArtist;
 export const selectOneArtistFetching = (state: RootState) => state.artists.fetchOneLoading;
 export const selectArtistCreating = (state: RootState) => state.artists.createLoading;
 export const selectCreateArtistError = (state: RootState) => state.artists.createArtistError;
+export const selectPublishedArtistLoading = (state: RootState) => state.artists.publishedLoading;

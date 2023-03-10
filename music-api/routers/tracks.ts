@@ -22,8 +22,9 @@ tracksRouter.get('/', user, async (req, res, next) => {
             albumName: tracks[0].album.name
           });
         }
-
-        return [];
+        return res.send({
+          tracks: []
+        });
       }
 
       const tracks = await Track.find<ITracks>({album: req.query.album, isPublished: true}).populate({path: 'album', populate: {path: 'artist', select: 'name'}}).sort('trackNumber');
@@ -34,8 +35,9 @@ tracksRouter.get('/', user, async (req, res, next) => {
           albumName: tracks[0].album.name
         });
       }
-
-      return [];
+      return res.send({
+        tracks: [],
+      });
     }
 
     if (user && user.role === 'admin') {

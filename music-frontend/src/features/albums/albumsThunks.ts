@@ -34,3 +34,10 @@ export const createAlbum = createAsyncThunk<void, AlbumMutation,{rejectValue: Va
     }
   }
 );
+
+export const publishedAlbum = createAsyncThunk<void, string>(
+  'albums/published',
+  async (id) => {
+    await axiosApi.patch('/albums/' + id + '/togglePublished');
+  }
+);

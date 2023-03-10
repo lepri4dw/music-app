@@ -16,3 +16,10 @@ export const createTrack = createAsyncThunk<void, TrackMutation, {rejectValue: V
     await axiosApi.post('/tracks', trackMutation);
   }
 );
+
+export const publishedTrack = createAsyncThunk<void, string>(
+  'artists/published',
+  async (id) => {
+    await axiosApi.patch('/tracks/' + id + '/togglePublished');
+  }
+);

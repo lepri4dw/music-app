@@ -32,7 +32,7 @@ const Albums = () => {
         </Grid>
         <Grid item container spacing={2}>
           {albums.map(album => (
-            <AlbumItem key={album._id} isPublished={album.isPublished} numberOfTracks={album.numberOfTracks} name={album.name} _id={album._id} image={album.image} yearOfIssue={album.yearOfIssue}/>
+            <AlbumItem key={album._id} artistId={id} isPublished={album.isPublished} numberOfTracks={album.numberOfTracks} name={album.name} _id={album._id} image={album.image} yearOfIssue={album.yearOfIssue}/>
           ))}
         </Grid>
       </Grid>}

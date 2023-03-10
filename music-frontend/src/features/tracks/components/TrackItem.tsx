@@ -8,6 +8,7 @@ import { selectTrackHistoryCreating } from '../../trackHistory/trackHistorySlice
 import { Close } from '@mui/icons-material';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { fetchTracks, publishedTrack } from '../tracksThunks';
 
 interface Props {
   id: string;
@@ -16,9 +17,10 @@ interface Props {
   length: string;
   youtubeId: string;
   isPublished: boolean;
+  albumId: string;
 }
 
-const TrackItem: React.FC<Props> = ({id, name, trackNumber, length, youtubeId, isPublished}) => {
+const TrackItem: React.FC<Props> = ({id, name, trackNumber, length, youtubeId, isPublished, albumId}) => {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -28,6 +30,14 @@ const TrackItem: React.FC<Props> = ({id, name, trackNumber, length, youtubeId, i
     await dispatch(createTrackHistory(id));
     handleClose();
   };
+
+  const togglePublished = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    await dispatch(publishedTrack(id));
+    dispatch(fetchTracks(albumId));
+  }
+
 
   const opts: YouTubeProps['opts'] = {
     height: '390',
@@ -51,7 +61,7 @@ const TrackItem: React.FC<Props> = ({id, name, trackNumber, length, youtubeId, i
             {!isPublished && user && user.role === 'admin' && (
               <div style={{display: 'flex', alignItems: 'center'}}>
                 <Typography variant="h6" sx={{pr: '5px'}}>Not publish</Typography>
-                <Button variant="contained" color="primary">Publish</Button>
+                <Button variant="contained" color="primary" onClick={togglePublished}>Publish</Button>
               </div>
             )}
             {user && user.role === 'admin' && (

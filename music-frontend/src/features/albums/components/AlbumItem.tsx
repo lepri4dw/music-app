@@ -7,7 +7,8 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
-  Grid, IconButton,
+  Grid,
+  IconButton,
   styled,
   Typography
 } from '@mui/material';
@@ -15,8 +16,9 @@ import noImageAvailable from '../../../assets/images/noImageAvailable.png';
 import { apiURL } from '../../../constants';
 import { Link } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useAppSelector } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/usersSlice';
+import { fetchAlbums, publishedAlbum } from '../albumsThunks';
 
 const ImageCardMedia = styled(CardMedia)({
   height: 0,
@@ -30,11 +32,20 @@ interface Props {
   yearOfIssue: number;
   numberOfTracks: number;
   isPublished: boolean;
+  artistId: string;
 }
 
-const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, numberOfTracks, isPublished}) => {
+const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, numberOfTracks, isPublished, artistId}) => {
+  const dispatch = useAppDispatch();
   let cardImage = noImageAvailable;
   const user = useAppSelector(selectUser);
+
+  const togglePublished = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    await dispatch(publishedAlbum(_id));
+    dispatch(fetchAlbums(artistId));
+  }
 
   if (image) {
     cardImage = apiURL + '/' + image;
@@ -53,7 +64,7 @@ const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, numberOfTrac
               {!isPublished && user && user.role === 'admin' && (
                 <div style={{display: 'flex', alignItems: 'center'}}>
                   <Typography variant="h6" sx={{pr: '5px'}}>Not publish</Typography>
-                  <Button variant="contained" color="primary">Publish</Button>
+                  <Button variant="contained" color="primary" onClick={togglePublished}>Publish</Button>
                 </div>
               )}
               {user && user.role === 'admin' && (

@@ -42,3 +42,10 @@ export const createArtist = createAsyncThunk<void, ArtistMutation, {rejectValue:
     }
   }
 );
+
+export const publishedArtist = createAsyncThunk<void, string>(
+  'artists/published',
+  async (id) => {
+    await axiosApi.patch('/artists/' + id + '/togglePublished');
+  }
+);
