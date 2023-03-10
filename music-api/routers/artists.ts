@@ -42,8 +42,7 @@ artistsRouter.post('/', auth, imagesUpload.single('photo'), async (req, res, nex
   try {
     const artist = await Artist.create({
       name: req.body.name,
-      photo: req.file ? req.file.filename : null,
-      info: req.body.info,
+      photo: req.file ? req.file.filename : null
     });
 
     return res.send(artist);

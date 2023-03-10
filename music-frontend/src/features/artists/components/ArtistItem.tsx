@@ -1,8 +1,21 @@
 import React from 'react';
-import { Card, CardActionArea, CardContent, CardMedia, Grid, styled, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Grid,
+  IconButton,
+  styled,
+  Typography
+} from '@mui/material';
 import noImageAvailable from '../../../assets/images/noImageAvailable.png';
 import { apiURL } from '../../../constants';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../../../app/hooks';
+import { selectUser } from '../../users/usersSlice';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ImageCardMedia = styled(CardMedia)({
   height: 0,
@@ -13,11 +26,12 @@ interface Props {
   name: string;
   _id: string;
   photo: string | null;
+  isPublished: boolean
 }
 
-const ArtistItem: React.FC<Props> = ({name, photo, _id}) => {
+const ArtistItem: React.FC<Props> = ({name, photo, _id, isPublished}) => {
   let cardImage = noImageAvailable;
-
+  const user = useAppSelector(selectUser);
   if (photo) {
     cardImage = apiURL + '/' + photo;
   }
@@ -28,6 +42,19 @@ const ArtistItem: React.FC<Props> = ({name, photo, _id}) => {
           <ImageCardMedia image={cardImage} title={name}/>
           <CardContent>
             <Typography variant="h6">{name}</Typography>
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+              {!isPublished && user && user.role === 'admin' && (
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                  <Typography variant="h6" sx={{pr: '5px'}}>Not publish</Typography>
+                  <Button variant="contained" color="primary">Publish</Button>
+                </div>
+              )}
+              {user && user.role === 'admin' && (
+                <IconButton style={{marginLeft: 'auto'}}>
+                  <DeleteIcon />
+                </IconButton>
+              )}
+            </div>
           </CardContent>
         </CardActionArea>
       </Card>

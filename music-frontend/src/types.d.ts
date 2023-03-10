@@ -2,7 +2,12 @@ export interface Artist {
   _id: string;
   name: string;
   photo: string | null;
-  info: string;
+  isPublished: boolean;
+}
+
+export interface ArtistMutation {
+  name: string;
+  photo: File | null;
 }
 
 export interface Album {
@@ -12,6 +17,14 @@ export interface Album {
   artist: Artist;
   yearOfIssue: number;
   numberOfTracks: number;
+  isPublished: boolean;
+}
+
+export interface AlbumMutation {
+  name: string;
+  image: File | null;
+  artist: string;
+  yearOfIssue: string;
 }
 
 export interface Track {
@@ -20,6 +33,15 @@ export interface Track {
   album: string;
   length: string;
   trackNumber: number;
+  youtubeId: string;
+  isPublished: boolean;
+}
+
+export interface TrackMutation {
+  name: string;
+  album: string;
+  length: string;
+  trackNumber: string;
   youtubeId: string;
 }
 
@@ -38,6 +60,7 @@ export interface User {
   _id: string;
   username: string;
   token: string;
+  role: string;
 }
 
 export interface ValidationError {

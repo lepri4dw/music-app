@@ -15,6 +15,19 @@ tracksRouter.get('/', user, async (req, res, next) => {
     if (req.query.album) {
       if (user && user.role === 'admin') {
         const tracks = await Track.find<ITracks>({album: req.query.album}).populate({path: 'album', populate: {path: 'artist', select: 'name'}}).sort('trackNumber');
+        if (tracks.length > 0) {
+          return res.send({
+            tracks: tracks,
+            artist: tracks[0].album.artist.name,
+            albumName: tracks[0].album.name
+          });
+        }
+
+        return [];
+      }
+
+      const tracks = await Track.find<ITracks>({album: req.query.album, isPublished: true}).populate({path: 'album', populate: {path: 'artist', select: 'name'}}).sort('trackNumber');
+      if (tracks.length > 0) {
         return res.send({
           tracks: tracks,
           artist: tracks[0].album.artist.name,
@@ -22,12 +35,7 @@ tracksRouter.get('/', user, async (req, res, next) => {
         });
       }
 
-      const tracks = await Track.find<ITracks>({album: req.query.album, isPublished: true}).populate({path: 'album', populate: {path: 'artist', select: 'name'}}).sort('trackNumber');
-      return res.send({
-        tracks: tracks,
-        artist: tracks[0].album.artist.name,
-        albumName: tracks[0].album.name
-      });
+      return [];
     }
 
     if (user && user.role === 'admin') {
@@ -48,7 +56,7 @@ tracksRouter.post('/', auth, async (req, res, next) => {
       name: req.body.name,
       album: req.body.album,
       length: req.body.length,
-      trackNumber: req.body.trackNumber,
+      trackNumber: parseFloat(req.body.trackNumber),
       youtubeId: req.body.youtubeId
     });
 

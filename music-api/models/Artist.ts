@@ -7,7 +7,6 @@ const ArtistSchema = new Schema({
     required: true,
   },
   photo: String,
-  info: String,
   isPublished: {
     type: Boolean,
     required: true,

@@ -1,20 +1,24 @@
-import { Artist } from '../../types';
+import { Artist, ValidationError } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { fetchArtists, fetchOneArtist } from './artistsThunks';
+import { createArtist, fetchArtists, fetchOneArtist } from './artistsThunks';
 
 interface ArtistsState {
   items: Artist[],
   fetchLoading: boolean;
   oneArtist: Artist | null;
   fetchOneLoading: boolean;
+  createLoading: boolean;
+  createArtistError: ValidationError | null;
 }
 
 const initialState: ArtistsState = {
   items: [],
   fetchLoading: false,
   oneArtist: null,
-  fetchOneLoading: false
+  fetchOneLoading: false,
+  createLoading: false,
+  createArtistError: null,
 };
 
 const artistsSlice = createSlice({
@@ -32,6 +36,7 @@ const artistsSlice = createSlice({
     builder.addCase(fetchArtists.rejected, (state) => {
       state.fetchLoading = false;
     });
+
     builder.addCase(fetchOneArtist.pending, (state) => {
       state.fetchOneLoading = true;
     });
@@ -42,6 +47,18 @@ const artistsSlice = createSlice({
     builder.addCase(fetchOneArtist.rejected, (state) => {
       state.fetchOneLoading = false;
     });
+
+    builder.addCase(createArtist.pending, (state) => {
+      state.createArtistError = null;
+      state.createLoading = true;
+    });
+    builder.addCase(createArtist.fulfilled, (state, ) => {
+      state.createLoading = false;
+    });
+    builder.addCase(createArtist.rejected, (state, {payload: error}) => {
+      state.createArtistError = error || null;
+      state.createLoading = false;
+    });
   },
 });
 
@@ -51,3 +68,5 @@ export const selectArtists = (state: RootState) => state.artists.items;
 export const selectArtistsFetching = (state: RootState) => state.artists.fetchLoading;
 export const selectOneArtist = (state: RootState) => state.artists.oneArtist;
 export const selectOneArtistFetching = (state: RootState) => state.artists.fetchOneLoading;
+export const selectArtistCreating = (state: RootState) => state.artists.createLoading;
+export const selectCreateArtistError = (state: RootState) => state.artists.createArtistError;

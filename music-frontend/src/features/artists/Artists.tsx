@@ -23,7 +23,7 @@ const Artists = () => {
       </Grid>
       {loading ? <CircularProgress/> : <Grid item container spacing={2}>
         {artists.map(artist => (
-          <ArtistItem key={artist._id} name={artist.name} _id={artist._id} photo={artist.photo}/>
+          <ArtistItem isPublished={artist.isPublished} key={artist._id} name={artist.name} _id={artist._id} photo={artist.photo}/>
         ))}
       </Grid>}
     </Grid>

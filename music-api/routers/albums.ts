@@ -10,8 +10,15 @@ import {IAlbum} from "../types";
 
 const albumsRouter = express.Router();
 
-const getAlbumsWithNumberOfTracks = async (albums: LeanDocument<IAlbum>[]) => {
+const getAlbumsWithNumberOfTracks = async (albums: LeanDocument<IAlbum>[], isAdmin: boolean) => {
   return await Promise.all(albums.map(async (album) => {
+    if (isAdmin) {
+      const tracks = await Track.find({album: album._id});
+      return {
+        ...album,
+        numberOfTracks: tracks.length
+      }
+    }
     const tracks = await Track.find({album: album._id, isPublished: true});
     return {
       ...album,
@@ -27,25 +34,25 @@ albumsRouter.get('/', user, async (req, res, next) => {
     if (req.query.artist) {
       if (user && user.role === 'admin') {
         const albums = await Album.find({artist: req.query.artist}).sort([['yearOfIssue', -1]]).lean() as LeanDocument<IAlbum>[];
-        const newAlbums = await getAlbumsWithNumberOfTracks(albums);
+        const newAlbums = await getAlbumsWithNumberOfTracks(albums, true);
 
         return res.send(newAlbums);
       }
 
       const albums = await Album.find({artist: req.query.artist, isPublished: true}).sort([['yearOfIssue', -1]]).lean() as LeanDocument<IAlbum>[];
-      const newAlbums = await getAlbumsWithNumberOfTracks(albums);
+      const newAlbums = await getAlbumsWithNumberOfTracks(albums, false);
       return res.send(newAlbums);
     }
 
     if (user && user.role === 'admin') {
       const albums = await Album.find().sort([['yearOfIssue', -1]]).lean() as LeanDocument<IAlbum>[];
-      const newAlbums = await getAlbumsWithNumberOfTracks(albums);
+      const newAlbums = await getAlbumsWithNumberOfTracks(albums, true);
 
       return res.send(newAlbums);
     }
 
     const albums = await Album.find({isPublished: true}).sort([['yearOfIssue', -1]]).lean() as LeanDocument<IAlbum>[];
-    const newAlbums = await getAlbumsWithNumberOfTracks(albums);
+    const newAlbums = await getAlbumsWithNumberOfTracks(albums, false);
 
     return res.send(newAlbums);
   } catch (e) {
@@ -73,7 +80,7 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
     const album = await Album.create({
       name: req.body.name,
       artist: req.body.artist,
-      yearOfIssue: req.body.yearOfIssue,
+      yearOfIssue: parseFloat(req.body.yearOfIssue),
       image: req.file ? req.file.filename : null,
     });
 

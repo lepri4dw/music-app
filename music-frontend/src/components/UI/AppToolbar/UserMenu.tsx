@@ -40,7 +40,9 @@ const UserMenu: React.FC<Props> = ({user}) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem>Profile</MenuItem>
+        <MenuItem component={NavLink} to="/new-artist">Add artist</MenuItem>
+        <MenuItem component={NavLink} to="/new-album">Add album</MenuItem>
+        <MenuItem component={NavLink} to="/new-track">Add track</MenuItem>
         <MenuItem component={NavLink} to="/track_history">Track History</MenuItem>
         <MenuItem onClick={handleLogout} disabled={logoutLoading}>{logoutLoading && <CircularProgress size={20} sx={{mr: 1}}/>}Logout</MenuItem>
       </Menu>

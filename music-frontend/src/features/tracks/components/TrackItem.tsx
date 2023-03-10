@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Card, Grid, IconButton, Modal, Toolbar, Typography } from '@mui/material';
+import { Box, Button, Card, Grid, IconButton, Modal, Toolbar, Typography } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/usersSlice';
@@ -7,6 +7,7 @@ import { createTrackHistory } from '../../trackHistory/trackHistoryThunks';
 import { selectTrackHistoryCreating } from '../../trackHistory/trackHistorySlice';
 import { Close } from '@mui/icons-material';
 import YouTube, { YouTubeProps } from 'react-youtube';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Props {
   id: string;
@@ -14,9 +15,10 @@ interface Props {
   trackNumber: number;
   length: string;
   youtubeId: string;
+  isPublished: boolean;
 }
 
-const TrackItem: React.FC<Props> = ({id, name, trackNumber, length, youtubeId}) => {
+const TrackItem: React.FC<Props> = ({id, name, trackNumber, length, youtubeId, isPublished}) => {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -45,6 +47,19 @@ const TrackItem: React.FC<Props> = ({id, name, trackNumber, length, youtubeId}) 
             <Grid item xs={2}>{length}</Grid>
             {user && <Grid item xs={1}><IconButton sx={{p: 0}} onClick={() => playButtonHandler()} disabled={createLoading}><PlayArrowIcon fontSize="large" color="success"/></IconButton></Grid>}
           </Grid>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            {!isPublished && user && user.role === 'admin' && (
+              <div style={{display: 'flex', alignItems: 'center'}}>
+                <Typography variant="h6" sx={{pr: '5px'}}>Not publish</Typography>
+                <Button variant="contained" color="primary">Publish</Button>
+              </div>
+            )}
+            {user && user.role === 'admin' && (
+              <IconButton style={{marginLeft: 'auto'}} onClick={(e) => {e.stopPropagation();}}>
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </div>
         </Card>
       </Grid>
       <Modal open={open} onClose={handleClose}>
