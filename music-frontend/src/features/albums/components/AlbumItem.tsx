@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {
-  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -18,7 +17,9 @@ import { Link } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/usersSlice';
-import { fetchAlbums, publishedAlbum } from '../albumsThunks';
+import { deleteAlbum, fetchAlbums, publishedAlbum } from '../albumsThunks';
+import { selectAlbumDeleting, selectAlbumPublishing } from '../albumsSlice';
+import { LoadingButton } from '@mui/lab';
 
 const ImageCardMedia = styled(CardMedia)({
   height: 0,
@@ -39,12 +40,24 @@ const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, numberOfTrac
   const dispatch = useAppDispatch();
   let cardImage = noImageAvailable;
   const user = useAppSelector(selectUser);
+  const deleteLoading = useAppSelector(selectAlbumDeleting);
+  const publishLoading = useAppSelector(selectAlbumPublishing);
 
   const togglePublished = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
     await dispatch(publishedAlbum(_id));
     dispatch(fetchAlbums(artistId));
+  }
+
+  const handleDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (window.confirm('Deleting an album will also delete all their tracks. ' +
+      'Do you really want to delete this album?')) {
+      await dispatch(deleteAlbum(_id));
+      dispatch(fetchAlbums(artistId));
+    }
   }
 
   if (image) {
@@ -64,11 +77,11 @@ const AlbumItem: React.FC<Props> = ({name, _id, image, yearOfIssue, numberOfTrac
               {!isPublished && user && user.role === 'admin' && (
                 <div style={{display: 'flex', alignItems: 'center'}}>
                   <Typography variant="h6" sx={{pr: '5px'}}>Not publish</Typography>
-                  <Button variant="contained" color="primary" onClick={togglePublished}>Publish</Button>
+                  <LoadingButton loadingIndicator="Loading..." loading={publishLoading ? publishLoading === _id : false} variant="contained" color="primary" onClick={togglePublished}>Publish</LoadingButton>
                 </div>
               )}
               {user && user.role === 'admin' && (
-                <IconButton style={{marginLeft: 'auto'}} onClick={(e) => {e.stopPropagation();}}>
+                <IconButton disabled={deleteLoading ? deleteLoading === _id : false}  style={{marginLeft: 'auto'}} onClick={handleDelete}>
                   <DeleteIcon />
                 </IconButton>
               )}

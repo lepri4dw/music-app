@@ -1,22 +1,14 @@
 import React from 'react';
-import {
-  Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Grid,
-  IconButton,
-  styled,
-  Typography
-} from '@mui/material';
+import { Card, CardActionArea, CardContent, CardMedia, Grid, IconButton, styled, Typography } from '@mui/material';
 import noImageAvailable from '../../../assets/images/noImageAvailable.png';
 import { apiURL } from '../../../constants';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/usersSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { fetchArtists, publishedArtist } from '../artistsThunks';
+import { deleteArtist, fetchArtists, publishedArtist } from '../artistsThunks';
+import { selectArtistDeleting, selectArtistPublishing } from '../artistsSlice';
+import { LoadingButton } from '@mui/lab';
 
 const ImageCardMedia = styled(CardMedia)({
   height: 0,
@@ -34,6 +26,8 @@ const ArtistItem: React.FC<Props> = ({name, photo, _id, isPublished}) => {
   const dispatch = useAppDispatch();
   let cardImage = noImageAvailable;
   const user = useAppSelector(selectUser);
+  const deleteLoading = useAppSelector(selectArtistDeleting);
+  const publishLoading = useAppSelector(selectArtistPublishing);
   if (photo) {
     cardImage = apiURL + '/' + photo;
   }
@@ -43,6 +37,17 @@ const ArtistItem: React.FC<Props> = ({name, photo, _id, isPublished}) => {
     event.preventDefault();
     await dispatch(publishedArtist(_id));
     dispatch(fetchArtists());
+  }
+
+
+  const handleDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (window.confirm('Deleting an artist will also delete all their albums and tracks. ' +
+      'Do you really want to delete this artist?')) {
+      await dispatch(deleteArtist(_id));
+      dispatch(fetchArtists());
+    }
   }
 
   return (
@@ -56,12 +61,12 @@ const ArtistItem: React.FC<Props> = ({name, photo, _id, isPublished}) => {
               {!isPublished && user && user.role === 'admin' && (
                 <div style={{display: 'flex', alignItems: 'center'}}>
                   <Typography variant="h6" sx={{pr: '5px'}}>Not publish</Typography>
-                  <Button variant="contained" color="primary" onClick={togglePublished}>Publish</Button>
+                  <LoadingButton loading={publishLoading ? publishLoading === _id : false} loadingIndicator="Loading…"  variant="contained" color="primary" onClick={togglePublished}>Publish</LoadingButton>
                 </div>
               )}
               {user && user.role === 'admin' && (
-                <IconButton style={{marginLeft: 'auto'}}>
-                  <DeleteIcon />
+                <IconButton disabled={deleteLoading ? deleteLoading === _id : false} style={{marginLeft: 'auto'}} onClick={handleDelete}>
+                  <DeleteIcon/>
                 </IconButton>
               )}
             </div>

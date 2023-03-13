@@ -41,3 +41,10 @@ export const publishedAlbum = createAsyncThunk<void, string>(
     await axiosApi.patch('/albums/' + id + '/togglePublished');
   }
 );
+
+export const deleteAlbum = createAsyncThunk<void, string>(
+  'albums/delete',
+  async (id) => {
+    await axiosApi.delete('/albums/' + id);
+  }
+);

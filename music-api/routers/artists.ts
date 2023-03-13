@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import auth, {RequestWithUser} from "../middleware/auth";
 import permit from "../middleware/permit";
 import user from "../middleware/user";
+import Album from "../models/Album";
+import Track from "../models/Track";
 
 const artistsRouter = express.Router();
 
@@ -57,6 +59,11 @@ artistsRouter.post('/', auth, imagesUpload.single('photo'), async (req, res, nex
 
 artistsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
+    const albums = await Album.find({artist: req.params.id});
+    albums.forEach(async (album) => {
+      await Track.deleteMany({album: album._id});
+    });
+    await Album.deleteMany({artist: req.params.id});
     await Artist.deleteOne({_id: req.params.id});
     return res.send({message: 'Deleted'});
   } catch (e) {

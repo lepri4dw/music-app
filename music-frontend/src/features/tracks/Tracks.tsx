@@ -30,7 +30,7 @@ const Tracks = () => {
         </Grid>
         <Grid item container spacing={2}>
           {tracksWithArtistAndAlbum && tracksWithArtistAndAlbum.tracks.map(track =>
-            (<TrackItem key={track._id} isPublished={track.isPublished} albumId={id} id={track._id} name={track.name} trackNumber={track.trackNumber} length={track.length} youtubeId={track.youtubeId}/>)
+            (<TrackItem key={track._id} isPublished={track.isPublished} albumId={id} _id={track._id} name={track.name} trackNumber={track.trackNumber} length={track.length} youtubeId={track.youtubeId}/>)
           )}
         </Grid>
       </Grid>}

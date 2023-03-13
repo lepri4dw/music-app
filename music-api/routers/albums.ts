@@ -96,6 +96,7 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req, res, next
 
 albumsRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
   try {
+    await Track.deleteMany({album: req.params.id});
     await Album.deleteOne({_id: req.params.id});
     return res.send({message: 'Deleted'});
   } catch (e) {

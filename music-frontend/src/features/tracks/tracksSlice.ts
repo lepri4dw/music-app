@@ -1,14 +1,15 @@
 import { ITracks, ValidationError } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { createTrack, fetchTracks, publishedTrack } from './tracksThunks';
+import { createTrack, deleteTrack, fetchTracks, publishedTrack } from './tracksThunks';
 
 interface TracksState {
   items: ITracks | null;
   fetchLoading: boolean;
   createLoading: boolean;
   createTrackError: ValidationError | null;
-  publishedLoading: boolean;
+  publishedLoading: string | false;
+  deleteLoading: string | false;
 }
 
 const initialState: TracksState = {
@@ -17,6 +18,7 @@ const initialState: TracksState = {
   createLoading: false,
   createTrackError: null,
   publishedLoading: false,
+  deleteLoading: false
 };
 
 const tracksSLice = createSlice({
@@ -47,14 +49,24 @@ const tracksSLice = createSlice({
       state.createLoading = false;
     });
 
-    builder.addCase(publishedTrack.pending, (state) => {
-      state.publishedLoading = true;
+    builder.addCase(publishedTrack.pending, (state, {meta: {arg: id}}) => {
+      state.publishedLoading = id;
     });
     builder.addCase(publishedTrack.fulfilled, (state) => {
       state.publishedLoading = false;
     });
     builder.addCase(publishedTrack.rejected, (state) => {
       state.publishedLoading = false;
+    });
+
+    builder.addCase(deleteTrack.pending, (state, {meta: {arg: id}}) => {
+      state.deleteLoading = id;
+    });
+    builder.addCase(deleteTrack.fulfilled, (state) => {
+      state.deleteLoading = false;
+    });
+    builder.addCase(deleteTrack.rejected, (state) => {
+      state.deleteLoading = false;
     });
   }
 });
@@ -65,4 +77,5 @@ export const selectTracks = (state: RootState) => state.tracks.items;
 export const selectTracksFetching = (state: RootState) => state.tracks.fetchLoading;
 export const selectTrackCreating = (state: RootState) => state.tracks.createLoading;
 export const selectCreateTrackError = (state: RootState) => state.tracks.createTrackError;
-export const selectPublishedTrackLoading = (state: RootState) => state.tracks.publishedLoading;
+export const selectTrackPublishing = (state: RootState) => state.tracks.publishedLoading;
+export const selectTrackDeleting = (state: RootState) => state.tracks.deleteLoading;
