@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { User } from '../../../types';
-import { Button, CircularProgress, Menu, MenuItem } from '@mui/material';
+import { Avatar, Button, CircularProgress, Menu, MenuItem } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectLogoutLoading } from '../../../features/users/usersSlice';
 import { logout } from '../../../features/users/usersThunks';
+import noAvatarAvailable from '../../../assets/images/noAvatarAvailable.jpg';
+import { apiURL } from '../../../constants';
 
 interface Props {
   user: User;
@@ -17,6 +19,12 @@ const UserMenu: React.FC<Props> = ({user}) => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  let avatar = noAvatarAvailable;
+
+  if (user.avatar) {
+    avatar = apiURL + '/' + user.avatar;
+  }
 
   const handleLogout = () => {
     dispatch(logout());
@@ -32,7 +40,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
         onClick={handleClick}
         color="inherit"
       >
-        Hello, {user.username}
+        Hello, {user.displayName} <Avatar sx={{ml: 2}} src={avatar} alt={user.username}/>
       </Button>
       <Menu
         anchorEl={anchorEl}

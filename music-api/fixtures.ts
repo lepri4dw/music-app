@@ -20,18 +20,22 @@ const run = async () => {
   }
 
   await User.create({
-    username: 'Vasya',
+    username: 'vasya@gmail.com',
     password: '12345',
     token: crypto.randomUUID(),
-    role: 'admin'
+    role: 'admin',
+    displayName: 'Vasya',
+    avatar: 'fixtures/avatar.png',
   }, {
     username: 'Artem',
     password: 'qwerty123',
-    token: crypto.randomUUID()
+    token: crypto.randomUUID(),
+    displayName: 'Artem',
   }, {
     username: 'David',
     password: 'a@123456',
-    token: crypto.randomUUID()
+    token: crypto.randomUUID(),
+    displayName: 'David',
   });
 
   const [Eminem, Drake, LadyGaGa] = await Artist.create({

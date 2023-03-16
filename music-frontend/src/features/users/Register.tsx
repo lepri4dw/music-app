@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectRegisterError, selectRegisterLoading } from './usersSlice';
 import { register } from './usersThunks';
 import { LoadingButton } from '@mui/lab';
+import FileInput from '../../components/UI/FileInput/FileInput';
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +18,9 @@ const Register = () => {
 
   const [state, setState] = useState<RegisterMutation>({
     username: '',
-    password: ''
+    password: '',
+    displayName: '',
+    avatar: null
   });
 
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,11 +31,19 @@ const Register = () => {
   const submitFormHandler = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
+      console.log(state);
       await dispatch(register(state)).unwrap();
       navigate('/');
     } catch (e) {
       // error happened
     }
+  };
+
+  const fileInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, files} = e.target;
+    setState(prevState => ({
+      ...prevState, [name]: files && files[0] ? files[0] : null,
+    }));
   };
 
   const getFieldError = (fieldName: string) => {
@@ -59,14 +70,14 @@ const Register = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" noValidate onSubmit={submitFormHandler} sx={{mt: 3}}>
+        <Box component="form" onSubmit={submitFormHandler} sx={{mt: 3}}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 label="Username"
                 name="username"
                 autoComplete="new-username"
-                value={state.username}
+                value={state.username} required
                 onChange={inputChangeHandler}
                 error={Boolean(getFieldError('username'))}
                 helperText={getFieldError('username')}
@@ -74,9 +85,20 @@ const Register = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                required
+                name="displayName"
+                label="Display Name"
+                value={state.displayName}
+                onChange={inputChangeHandler}
+                error={Boolean(getFieldError('displayName'))}
+                helperText={getFieldError('displayName')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
                 name="password"
                 label="Password"
-                type="password"
+                type="password" required
                 autoComplete="new-password"
                 value={state.password}
                 onChange={inputChangeHandler}
@@ -84,6 +106,9 @@ const Register = () => {
                 helperText={getFieldError('password')}
               />
             </Grid>
+          </Grid>
+          <Grid item xs={12} sx={{mt: 2}}>
+            <FileInput onChange={fileInputChangeHandler} name="avatar" label="Avatar"/>
           </Grid>
           <LoadingButton
             type="submit"

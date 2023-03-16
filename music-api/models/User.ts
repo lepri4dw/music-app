@@ -39,7 +39,13 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
     required: true,
     default: 'user',
     enum: ['user', 'admin']
-  }
+  },
+  displayName: {
+    type: String,
+    required: true
+  },
+  avatar: String,
+  googleId: String
 });
 
 UserSchema.pre('save', async function(next) {
