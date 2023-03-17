@@ -16,6 +16,7 @@ const ArtistForm = () => {
   const [state, setState] = useState<ArtistMutation>({
     name: '',
     photo: null,
+    info: '',
   });
 
   const getFieldError = (fieldName: string) => {
@@ -36,7 +37,7 @@ const ArtistForm = () => {
     }
   };
 
-  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const {name, value} = e.target;
     setState(prevState => {
       return {...prevState, [name]: value};
@@ -64,6 +65,18 @@ const ArtistForm = () => {
             name="name" required
             error={Boolean(getFieldError('name'))}
             helperText={getFieldError('name')}
+          />
+        </Grid>
+
+        <Grid item xs>
+          <TextField
+            multiline rows={3}
+            id="info" label="Info"
+            value={state.info}
+            onChange={inputChangeHandler}
+            name="info"
+            error={Boolean(getFieldError('info'))}
+            helperText={getFieldError('info')}
           />
         </Grid>
 

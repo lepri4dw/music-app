@@ -2,12 +2,14 @@ export interface Artist {
   _id: string;
   name: string;
   photo: string | null;
+  info: string;
   isPublished: boolean;
 }
 
 export interface ArtistMutation {
   name: string;
   photo: File | null;
+  info: string;
 }
 
 export interface Album {

@@ -118,7 +118,7 @@ const TrackForm = () => {
             id="length" label="Length"
             value={state.length}
             onChange={inputChangeHandler}
-            name="length" required
+            name="length" required InputProps={{inputProps: {pattern: "^\\d{2}:\\d{2}$", title: 'Enter a valid track length in the format of mm:ss'}}}
             error={Boolean(getFieldError('length'))}
             helperText={getFieldError('length')}
           />

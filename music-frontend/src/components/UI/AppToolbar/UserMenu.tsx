@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { User } from '../../../types';
 import { Avatar, Button, CircularProgress, Menu, MenuItem } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectLogoutLoading } from '../../../features/users/usersSlice';
 import { logout } from '../../../features/users/usersThunks';
 import noAvatarAvailable from '../../../assets/images/noAvatarAvailable.jpg';
 import { apiURL } from '../../../constants';
+import { fetchArtists } from '../../../features/artists/artistsThunks';
 
 interface Props {
   user: User;
@@ -14,6 +15,8 @@ interface Props {
 
 const UserMenu: React.FC<Props> = ({user}) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = (useLocation()).pathname;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const logoutLoading = useAppSelector(selectLogoutLoading);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -26,8 +29,12 @@ const UserMenu: React.FC<Props> = ({user}) => {
     avatar = apiURL + '/' + user.avatar;
   }
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logout()).unwrap();
+    if (location === '/') {
+      dispatch(fetchArtists());
+    }
+    navigate('/');
   };
 
   const handleClose = () => {
